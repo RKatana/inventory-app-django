@@ -2,4 +2,4 @@
 The back-end submodule for the inventory app
 
 
-Added some junk for demo but to be deleted
+Dleted this line, just for testing
