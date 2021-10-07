@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Users
 from django.contrib import messages
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render,redirect
 
@@ -18,3 +19,19 @@ def register(request):
             messages.add_message(request, messages.SUCCESS, "You have successfully registered!")
             return redirect(signin)
     return render(request, 'login/signup.html')
+
+
+def signin(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password']
+        user = authenticate(email=email, password=password)
+        if user is not None:
+            login(request, user)
+            messages.add_message(request, messages.SUCCESS, "You have successfully login!")
+            return redirect('index')
+        else:
+            messages.add_message(request, messages.WARNING, "Invalid credentials!")
+            return redirect('signin')
+    else:
+        return render(request, 'login/signin.html')
