@@ -28,6 +28,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install Dependencies
@@ -40,4 +41,3 @@ jobs:
     - name: Run Tests
       run: |
         pipenv run make test_report
-
