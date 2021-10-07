@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-include .env
+# include .env
 
 install:
 	pipenv install
@@ -22,3 +22,8 @@ superuser:
 
 test:
 	python manage.py test
+
+test_report: 
+	coverage erase 
+	coverage run manage.py test 
+	coverage html 
