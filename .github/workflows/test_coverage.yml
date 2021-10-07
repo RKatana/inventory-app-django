@@ -1,5 +1,17 @@
 name: SIA Test Coverage
 
+env: 
+  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  DEBUG: ${{ secrets.DEBUG }}
+  ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+  DB_NAME: ${{ secrets.DB_NAME }}
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  PRODUCTION: ${{ secrets.PRODUCTION }}
+  DISABLE_COLLECTSTATIC: ${{ secrets.DISABLE_COLLECTSTATIC }}
+  CLOUDINARY_URL: ${{ secrets.CLOUDINARY_URL }}
+  TESTING: 'True'
+
 on:
   push:
     branches: [ main, development ]
@@ -14,8 +26,6 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: [3.8]
-
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
