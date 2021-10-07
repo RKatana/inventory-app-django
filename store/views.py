@@ -18,7 +18,7 @@ def register(request):
             user.save()
             messages.add_message(request, messages.SUCCESS, "You have successfully registered!")
             return redirect(signin)
-    return render(request, 'login/signup.html')
+    return render(request, '')
 
 
 def signin(request):
@@ -34,4 +34,4 @@ def signin(request):
             messages.add_message(request, messages.WARNING, "Invalid credentials!")
             return redirect('signin')
     else:
-        return render(request, 'login/signin.html')
+        return render(request, '')
