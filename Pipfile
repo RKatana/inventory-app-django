@@ -12,6 +12,9 @@ python-decouple = "*"
 cloudinary = "*"
 djangorestframework = "*"
 django-rest-swagger = "*"
+djoser = "*"
+djangorestframework-simplejwt = "*"
+social-auth-app-django = "*"
 
 [dev-packages]
 
