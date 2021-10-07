@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin
 from django.db import models
-<<<<<<< HEAD
+
+# <<<<<<< HEAD
 from cloudinary.models import CloudinaryField
 
 # Create your models here.
@@ -26,7 +27,7 @@ class Profile(models.Model):
 
   def __str__(self):
     return self.username.username
-=======
+  
 from .managers import UserManager
 
 # Create your models here.
@@ -54,4 +55,3 @@ class User(AbstractBaseUser,PermissionsMixin):
 
     def __str__(self):
         return self.name
->>>>>>> 9e956906a8ff7509db94fa0172500e00ca1ab070

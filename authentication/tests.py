@@ -3,7 +3,8 @@ from django.db.models.expressions import Value
 from django.test import TestCase
 
 # Create your tests here.
-<<<<<<< HEAD
+
+# <<<<<<< HEAD
 class TestProfile(TestCase):
   def setUp(self):
     self.new_user = User(username = "muturi")
@@ -16,7 +17,7 @@ class TestProfile(TestCase):
 
   def test_isinstance(self):
     self.assertTrue(isinstance(self.newprofile, Profile))
-=======
+
 class UserManagerTest(TestCase):
     def test_create_user(self):
         User = get_user_model()
@@ -50,4 +51,4 @@ class UserManagerTest(TestCase):
             pass
         with self.assertRaises(ValueError):
             User.objects.create_superuser(email='super@user.com', password='foo', is_superuser=False)
->>>>>>> 9e956906a8ff7509db94fa0172500e00ca1ab070
+
