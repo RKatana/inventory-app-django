@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password
 
+
 # Create your views here.
 def register(request):
     if request.method == 'POST':
