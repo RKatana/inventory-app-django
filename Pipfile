@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+django-dotenv = "*"
+psycopg2-binary = "*"
+dj-database-url = "*"
+python-decouple = "*"
+cloudinary = "*"
+djangorestframework = "*"
+django-rest-swagger = "*"
+djoser = "*"
+djangorestframework-simplejwt = "*"
+social-auth-app-django = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"
