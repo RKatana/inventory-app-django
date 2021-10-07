@@ -11,6 +11,9 @@ shell:
 serve:
 	python manage.py runserver
 
+drymigration:
+	python manage.py makemigrations --dry-run --verbosity 3
+
 makemigrations:
 	python manage.py makemigrations
 
