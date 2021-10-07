@@ -143,3 +143,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 CLOUDINARY_URL = environ.get('CLOUDINARY_URL')
+
+
+AUTH_USER_MODEL = 'authentication.User'

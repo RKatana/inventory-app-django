@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-include .env
+# include .env
 
 install:
 	pipenv install
@@ -10,6 +10,9 @@ shell:
 
 serve:
 	python manage.py runserver
+
+drymigration:
+	python manage.py makemigrations --dry-run --verbosity 3
 
 makemigrations:
 	python manage.py makemigrations
@@ -22,3 +25,8 @@ superuser:
 
 test:
 	python manage.py test
+
+test_report: 
+	coverage erase 
+	coverage run manage.py test 
+	coverage html 
