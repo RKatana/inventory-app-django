@@ -10,7 +10,11 @@ env:
   PRODUCTION: ${{ secrets.PRODUCTION }}
   DISABLE_COLLECTSTATIC: ${{ secrets.DISABLE_COLLECTSTATIC }}
   CLOUDINARY_URL: ${{ secrets.CLOUDINARY_URL }}
+<<<<<<< HEAD
   TESTING: 'True'
+=======
+  TESTING: ${{ secrets.TESTING }}
+>>>>>>> add git workflow
 
 on:
   push:
@@ -26,6 +30,7 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: [3.8]
+<<<<<<< HEAD
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -39,6 +44,9 @@ jobs:
         PRODUCTION: ${{ secrets.PRODUCTION }}
         DISABLE_COLLECTSTATIC: ${{ secrets.DISABLE_COLLECTSTATIC }}
         CLOUDINARY_URL: ${{ secrets.CLOUDINARY_URL }}
+=======
+
+>>>>>>> add git workflow
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -54,4 +62,8 @@ jobs:
         echo installation done
     - name: Run Tests
       run: |
+<<<<<<< HEAD
         pipenv run make test_report
+=======
+        pipenv run make test_report
+>>>>>>> add git workflow
