@@ -83,9 +83,16 @@ WSGI_APPLICATION = 'jumpstock.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 PRODUCTION = environ.get('PRODUCTION')
+TESTING = environ.get('TESTING')
 DATABASES = {}
 if PRODUCTION == 'True':
     DATABASES['default'] = db_url.config()
+if TESTING == 'True':
+     DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+        }
+    }
 else:
     DATABASES = {
         'default': {

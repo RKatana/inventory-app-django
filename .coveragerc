@@ -3,20 +3,22 @@ branch = True
 omit = 
     *__init__.py
     *manage.py
-    */migrations
+    */migrations/*
+    *test*
 
 [report]
-# exclude_lines =
-#     def __init__*
-#     if _name__ ==
+exclude_lines =
+    def __init__*
+    if _name__ ==
 
-# omit = 
-#     *__init__.py
-#     *manage.py
-#     *settings.py
-#     */migrations
+omit = 
+    *__init__.py
+    *manage.py
+    *settings.py
+    */migrations/*
+    *test*
 
-fail_under = 98
+fail_under = 65
 
 [html]
 title = SIA Coverage Report
