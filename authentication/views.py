@@ -81,25 +81,3 @@ def login_user(request):
 
 
 
-
-
-
-
-
-# @api_view(['GET', 'POST'])
-# def signin(request):
-#     if request.method == 'POST':
-#         email = request.POST['email']
-#         password = request.POST['password']
-#         user = authenticate(email=email, password=password)
-#         if user is not None:
-#             login(request, user)
-#             messages.add_message(request, messages.SUCCESS, "You have successfully login!")
-#             return redirect('index')
-#         else:
-#             messages.add_message(request, messages.WARNING, "Invalid credentials!")
-#             return redirect('signin')
-#     else:
-#         return render(request, '')
-
-
