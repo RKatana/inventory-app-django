@@ -1,10 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.http.response import JsonResponse
-from django.shortcuts import render,redirect
 from .models import User, Users
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth import  login
+from django.contrib.auth.hashers import check_password
 from rest_framework.decorators import api_view, permission_classes, schema
 from rest_framework.schemas import AutoSchema
 from .serializers import UserSerializer 
