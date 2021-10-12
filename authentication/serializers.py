@@ -1,3 +1,5 @@
+from rest_framework import serializers
+from .models import Profile             
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
@@ -9,15 +11,15 @@ from django.utils.translation import ugettext_lazy as _
 
 
 #Your serializers here
+
+class ProfileSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Profile 
+    fields = ('id', 'username', 'profilePic', 'bio', 'occupation', 'phone', 'url')
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ('email', 'name', 'is_staff', 'is_superuser',)
-
-    # def validate(self, attrs):
-    #     if attrs['password'] != attrs
-
-
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
     @classmethod
@@ -33,6 +35,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         required=True,
         validators=[UniqueValidator(queryset=get_user_model().objects.all())]
     )
+    
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
 
@@ -67,17 +70,7 @@ class LoginUserSerializer(serializers.Serializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Profile 
+        model = Profile()
         fields = ('id', 'username', 'profilePic', 'bio', 'occupation', 'phone', 'url')
 
-
-
-
-
-
-
-
-
-
-
-
+        fields = ('id', 'username', 'profilePic', 'bio', 'occupation', 'phone', 'url')
