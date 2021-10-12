@@ -1,17 +1,10 @@
-<<<<<<< HEAD
-from rest_framework import serializers
-from .models import Profile
-
-class ProfileSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Profile 
-    fields = ('id', 'username', 'profilePic', 'bio', 'occupation', 'phone', 'url')
-=======
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.password_validation import validate_password
+from rest_framework import serializers
+from .models import Profile
 
 
 #Your serializers here
@@ -46,7 +39,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = get_user_model()
         fields = ('password', 'password2', 'email',)
 
-    
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile 
+        fields = ('id', 'username', 'profilePic', 'bio', 'occupation', 'phone', 'url')
 
 
 
@@ -54,4 +51,5 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 
->>>>>>> 15f525e866daded0189fac07fa2731298dc1d738
+
+
