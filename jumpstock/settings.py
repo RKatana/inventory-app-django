@@ -89,7 +89,7 @@ DATABASES = {}
 if PRODUCTION == 'True':
     DATABASES['default'] = db_url.config()
 if TESTING == 'True':
-     DATABASES = {
+    DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
         }

@@ -17,6 +17,9 @@ class User(AbstractBaseUser,PermissionsMixin):
     is_active =  models.BooleanField(default=True)
     last_login = models.DateTimeField(null=True, blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
+    password_reset = models.CharField(max_length=255, default='hnnka5647301')
+    password = models.CharField(max_length=255)
+
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
