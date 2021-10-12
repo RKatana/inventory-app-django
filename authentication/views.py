@@ -14,9 +14,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework import mixins
-#from rest_framework_swagger import 
-
-
+from rest_framework_swagger.views import get_swagger_view
 
 
 # Create your views here.
