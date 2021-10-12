@@ -26,6 +26,7 @@ class CustomAutoSchema(AutoSchema):
         # override view introspection here...
         pass
 
+
 @api_view(['GET', 'POST'])
 @schema(CustomAutoSchema())
 def register(request):
