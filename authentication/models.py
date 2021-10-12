@@ -39,7 +39,7 @@ class User(AbstractBaseUser,PermissionsMixin):
 
 # class profile
 class Profile(models.Model):
-    profile_pic = CloudinaryField('userProfile/', default='')
+    profile_pic = CloudinaryField('image', default='image/upload/v1632754417/24-248253_user-profile-default-image-png-clipart-png-download_obstgc.png')
     username = models.OneToOneField(get_user_model(), on_delete=models.CASCADE, null=True)
     bio = models.TextField(blank=True, null=True)
     occupation = models.TextField(blank=True, null=True)
