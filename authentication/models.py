@@ -29,6 +29,7 @@ class Profile(models.Model):
     return self.username.username
   
 from .managers import UserManager
+from cloudinary.models import CloudinaryField
 
 # Create your models here.
 class User(AbstractBaseUser,PermissionsMixin):
@@ -54,4 +55,6 @@ class User(AbstractBaseUser,PermissionsMixin):
         return self.email
 
     def __str__(self):
-        return self.name
+        if self.name:
+            return self.name
+        return self.email
