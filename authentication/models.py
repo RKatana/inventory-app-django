@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin
 from django.db import models
 from .managers import UserManager
+from cloudinary.models import CloudinaryField
 
 # Create your models here.
 class User(AbstractBaseUser,PermissionsMixin):
