@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin
 from django.db import models
 from .managers import UserManager
@@ -38,22 +39,22 @@ class User(AbstractBaseUser,PermissionsMixin):
 
 # class profile
 class Profile(models.Model):
-    profilePic = CloudinaryField('userProfile/', default='')
-    username = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    profile_pic = CloudinaryField('userProfile/', default='')
+    username = models.OneToOneField(get_user_model(), on_delete=models.CASCADE, null=True)
     bio = models.TextField(blank=True, null=True)
     occupation = models.TextField(blank=True, null=True)
     phone = models.IntegerField(blank=True, null=True)
     count = models.IntegerField(default=0, null=True, blank=True)
 
-    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+    @receiver(post_save, sender=get_user_model())
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
             Profile.objects.create(username=instance)
 
-    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-    def save_user_profile(sender, instance, **kwargs):
-        instance.profile.save()
+    # @receiver(post_save, sender=get_user_model())
+    # def save_user_profile(sender, instance, **kwargs):
+    #     instance.profile.save()
 
     def __str__(self):
-        return self.username.username
+        return self.username.name
 

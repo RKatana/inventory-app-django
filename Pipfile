@@ -16,6 +16,8 @@ djoser = "*"
 djangorestframework-simplejwt = "*"
 social-auth-app-django = "*"
 coverage = "*"
+coreapi = "*"
+markdown = "*"
 
 [dev-packages]
 
