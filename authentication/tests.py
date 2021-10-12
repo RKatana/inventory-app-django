@@ -2,19 +2,19 @@ import unittest
 from django.contrib.auth import get_user_model
 from django.db.models.expressions import Value
 from django.test import TestCase
+from .models import Profile
 
 # Create your tests here.
 
-# <<<<<<< HEAD
 class TestProfile(TestCase):
   def setUp(self):
-    self.new_user = User(username = "muturi")
+    self.new_user = get_user_model()(name = "muturi")
     self.new_user.save()
-    self.newprofile = Profile.objects.create(profilePic='', bio='engineer')
+    self.newprofile = Profile.objects.create(profile_pic='default.jpeg', bio='engineer')
 
   def tearDown(self):
     Profile.objects.all().delete()
-    User.objects.all().delete()
+    get_user_model().objects.all().delete()
 
   def test_isinstance(self):
     self.assertTrue(isinstance(self.newprofile, Profile))
@@ -22,24 +22,24 @@ class TestProfile(TestCase):
 class UserManagerTest(TestCase):
     @unittest.skip('The test fails')
     def test_create_user(self):
-        User = get_user_model()
-        user = User.objects.create_user(email='carpenter@user.com', password='foo')
+        #User = get_user_model()
+        user = get_user_model().objects.create_user(email='carpenter@user.com', password='foo')
         self.assertEqual(user.email, 'carpenter@user.com')
         self.assertTrue(user.is_active)
         self.assertFalse(user.is_staff)
         self.assertFalse(user.is_superuser)
         try:
-            self.assertIsNone(user.username)
+            self.assertIsNone(user.name)
         except AttributeError:
             pass
         with self.assertRaises(TypeError):
-            User.objects.create_user()
+            get_user_model().objects.create_user()
         with self.assertRaises(TypeError):
-            User.objects.create_user(email='')
+            get_user_model().objects.create_user(email='carpenter@user.com')
         with self.assertRaises(ValueError):
-            User.objects.create_user(email='', password="foo")
+            get_user_model().objects.create_user(email='carpenter@user.com', password="foo")
 
-    @unittest.skip('The test fails')
+    #@unittest.skip('The test fails')
     def test_create_superuser(self):
         User = get_user_model()
         admin_user = User.objects.create_superuser(email='super@user.com', password='foo')
