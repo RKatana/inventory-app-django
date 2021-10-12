@@ -4,6 +4,21 @@ from django.db.models.expressions import Value
 from django.test import TestCase
 
 # Create your tests here.
+
+# <<<<<<< HEAD
+class TestProfile(TestCase):
+  def setUp(self):
+    self.new_user = User(username = "muturi")
+    self.new_user.save()
+    self.newprofile = Profile.objects.create(profilePic='', bio='engineer')
+
+  def tearDown(self):
+    Profile.objects.all().delete()
+    User.objects.all().delete()
+
+  def test_isinstance(self):
+    self.assertTrue(isinstance(self.newprofile, Profile))
+
 class UserManagerTest(TestCase):
     @unittest.skip('The test fails')
     def test_create_user(self):
@@ -38,3 +53,4 @@ class UserManagerTest(TestCase):
             pass
         with self.assertRaises(ValueError):
             User.objects.create_superuser(email='super@user.com', password='foo', is_superuser=False)
+
