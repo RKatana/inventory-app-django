@@ -1,22 +1,25 @@
 from django.contrib.auth import get_user_model
 from django.http.response import JsonResponse
-from .models import User, Users
 from django.contrib import messages
 from django.contrib.auth import  login
 from django.contrib.auth.hashers import check_password
 from rest_framework.decorators import api_view, permission_classes, schema
 from rest_framework.schemas import AutoSchema
-from .serializers import UserSerializer 
 from rest_framework import status
-from rest_framework.response import Response
 from django.core.exceptions import ValidationError
-from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
+from .serializers import MyTokenObtainPairSerializer, UserSerializer
+from rest_framework.permissions import AllowAny,IsAdminUser
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.response import Response
+from rest_framework import generics
+from rest_framework import mixins
+#from rest_framework_swagger import 
+
 
 
 
 # Create your views here.
-
 class CustomAutoSchema(AutoSchema):
     def get_link(self, path, method, base_url):
         # override view introspection here...
@@ -78,6 +81,45 @@ def login_user(request):
 
         else:
             raise ValidationError({"400": f'Account doesnt exist'})
+
+class MyObtainTokenPairView(TokenObtainPairView):
+    permission_classes = (AllowAny,)
+    serializer_class =  MyTokenObtainPairSerializer
+
+
+class UserList(generics.ListCreateAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = UserSerializer(queryset, many=True)
+        return  Response(serializer.data)
+
+    def get(self,request,*args,**kwargs):
+        return self.list(request,*args,**kwargs)
+
+    def post(self,request,*args,**kwargs):
+        return self.create(request,*args,**kwargs)
+
+
+class UserDetail(mixins.RetrieveModelMixin,
+                mixins.UpdateModelMixin,
+                mixins.DestroyModelMixin,
+                generics.GenericAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer
+
+    def get(self,request, *args, **kwargs):
+        return self.retrieve(request,*args,**kwargs)
+
+    def put(self,request,*args, **kwargs):
+        return self.update(request,*args,**kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request,*args,**kwargs)
+
 
 
 
