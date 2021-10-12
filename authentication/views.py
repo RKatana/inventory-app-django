@@ -3,18 +3,21 @@ from django.http.response import JsonResponse
 from django.contrib import messages
 from django.contrib.auth import  login
 from django.contrib.auth.hashers import check_password
+from rest_framework import permissions
 from rest_framework.decorators import api_view, permission_classes, schema
 from rest_framework.schemas import AutoSchema
 from rest_framework import status
 from django.core.exceptions import ValidationError
 from rest_framework.authtoken.models import Token
-from .serializers import MyTokenObtainPairSerializer, UserSerializer
-from rest_framework.permissions import AllowAny,IsAdminUser
+from .serializers import MyTokenObtainPairSerializer, RegisterSerializer, UserSerializer
+from rest_framework.permissions import AllowAny,IsAdminUser, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework import mixins
 from rest_framework_swagger.views import get_swagger_view
+import coreapi
+from rest_framework import viewsets
 
 
 # Create your views here.
@@ -44,41 +47,41 @@ def register(request):
 
 
 @api_view(["POST"])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def login_user(request):
+    data = {}
+    reqBody = JsonResponse.loads(request.body)
+    email1 = reqBody['Email_Address']
+    print(email1)
+    password = reqBody['password']
+    try:
 
-        data = {}
-        reqBody = JsonResponse.loads(request.body)
-        email1 = reqBody['Email_Address']
-        print(email1)
-        password = reqBody['password']
-        try:
+        Account = get_user_model().objects.get(Email_Address=email1)
+    except BaseException as e:
+        raise ValidationError({"400": f'{str(e)}'})
 
-            Account = User.objects.get(Email_Address=email1)
-        except BaseException as e:
-            raise ValidationError({"400": f'{str(e)}'})
+    token = Token.objects.get_or_create(user=Account)[0].key
+    print(token)
+    if not check_password(password, Account.password):
+        raise ValidationError({"message": "Incorrect Login credentials"})
 
-        token = Token.objects.get_or_create(user=Account)[0].key
-        print(token)
-        if not check_password(password, Account.password):
-            raise ValidationError({"message": "Incorrect Login credentials"})
+    if Account:
+        if Account.is_active:
+            print(request.user)
+            login(request, Account)
+            data["message"] = "user logged in"
+            data["email_address"] = Account.email
 
-        if Account:
-            if Account.is_active:
-                print(request.user)
-                login(request, Account)
-                data["message"] = "user logged in"
-                data["email_address"] = Account.email
+            Res = {"data": data, "token": token}
 
-                Res = {"data": data, "token": token}
-
-                return Response(Res)
-
-            else:
-                raise ValidationError({"400": f'Account not active'})
+            return Response(Res)
 
         else:
-            raise ValidationError({"400": f'Account doesnt exist'})
+            raise ValidationError({"400": f'Account not active'})
+
+    else:
+        raise ValidationError({"400": f'Account doesnt exist'})
+
 
 class MyObtainTokenPairView(TokenObtainPairView):
     permission_classes = (AllowAny,)
@@ -117,6 +120,18 @@ class UserDetail(mixins.RetrieveModelMixin,
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request,*args,**kwargs)
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = get_user_model().objects.all().order_by('-name')
+    serializer_class = UserSerializer
+
+
+class UserCreateAPIView(generics.CreateAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = RegisterSerializer
+    permission_classes = (AllowAny,)
+
 
 
 
