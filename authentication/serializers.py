@@ -75,9 +75,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
 
 
-
-
-
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile 
