@@ -23,22 +23,20 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,TokenRefreshView
 
 schema_view = get_swagger_view(title='Registration')
 
-router = routers.DefaultRouter()
-router.register(r'users', authentication_views.UserViewSet)
+# router = routers.DefaultRouter()
+# router.register(r'users', authentication_views.UserViewSet)
 
 
 urlpatterns = [
     path('api/admin/', admin.site.urls),
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('', include(router.urls)),
-    path('api/register/', authentication_views.UserCreateAPIView.as_view(), name='register'),
+    # path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # path('', include(router.urls)),
+    # path('api/register/', authentication_views.UserCreateAPIView.as_view(), name='register'),
     #path('api/', include('rest_framework.urls', namespace='rest_framework')),
-    
-    # 
-    # path('api/login/', authentication_views.UserLoginAPIView.as_view(), name='login'),
+    #path('api/login/', authentication_views.UserLoginAPIView.as_view(), name='login'),
     # path('api/logout', authentication_views.UserLogoutAPIView.as_view(), name='logout'),
-    path('authentication/', include('authentication.urls')),
+    #path('authentication/', include('authentication.urls')),
     # path('^api/docs/', schema_view, name='api-doc'),
     
 ]
