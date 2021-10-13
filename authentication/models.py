@@ -45,6 +45,7 @@ class Profile(models.Model):
     occupation = models.TextField(blank=True, null=True)
     phone = models.IntegerField(blank=True, null=True)
     count = models.IntegerField(default=0, null=True, blank=True)
+    date_upload = models.DateTimeField(auto_now_add=True)
 
     @receiver(post_save, sender=get_user_model())
     def create_user_profile(sender, instance, created, **kwargs):
