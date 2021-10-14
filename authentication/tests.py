@@ -1,56 +1,87 @@
 import unittest
-from django.contrib.auth import get_user_model
+import json
 from django.db.models.expressions import Value
-from django.test import TestCase
-from .models import Profile,User 
+from django.urls import include, path, reverse
+from rest_framework import status
+from rest_framework.test import APITestCase, APIClient, URLPatternsTestCase
+from .models import User
 
 # Create your tests here.
+class UserTest(APITestCase, URLPatternsTestCase):
+    """ Test module for User """
 
-class TestProfile(TestCase):
+    urlpatterns = [
+        path('authentication/auth/', include('authentication.urls')),
+    ]
+
     def setUp(self):
-        self.new_user = get_user_model()(name = "muturi")
-        self.new_user.save()
-        self.newprofile = Profile.objects.create(profile_pic='default.jpeg', bio='engineer')
+        self.user1 = User.objects.create_user(
+            email='test1@test.com',
+            password='test',
+        )
 
-    def tearDown(self):
-        Profile.objects.all().delete()
-        get_user_model().objects.all().delete()
+        self.admin = User.objects.create_superuser(
+            email='admin@test.com',
+            password='admin',
+        )
 
-    def test_isinstance(self):
-        self.assertTrue(isinstance(self.newprofile, Profile))
+    def test_login(self):
+        """ Test if a user can login and get a JWT response token """
+        url = reverse('login')
+        data = {
+            'email': 'admin@test.com',
+            'password': 'admin'
+        }
+        response = self.client.post(url, data)
+        response_data = json.loads(response.content)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_data['success'], True)
+        self.assertTrue('access' in response_data)
 
-class UserManagerTest(TestCase):
-    #@unittest.skip('The test fails')
-    def test_create_user(self):
-        #User = get_user_model()
-        user = User.objects.create_user(email='carpenter@user.com', password='foo')
-        self.assertEqual(user.email, 'carpenter@user.com')
-        self.assertTrue(user.is_active)
-        self.assertFalse(user.is_staff)
-        self.assertFalse(user.is_superuser)
-        try:
-            self.assertIsNone(user.name)
-        except AttributeError:
-            pass
-        with self.assertRaises(TypeError):
-            User.objects.create_user()
-        with self.assertRaises(TypeError):
-            User.objects.create_user(email='')
-        with self.assertRaises(ValueError):
-            User.objects.create_user(email='', password="foo")
+    def test_user_registration(self):
+        """ Test if a user can register """
+        url = reverse('register')
+        data = {
+            'email': 'test2@test.com',
+            'password': 'test',
+        }
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    #@unittest.skip('The test fails')
-    def test_create_superuser(self):
-        #User = get_user_model()
-        admin_user = User.objects.create_superuser(email='super@user.com', password='foo')
-        self.assertEqual(admin_user.email, 'super@user.com')
-        self.assertTrue(admin_user.is_active)
-        self.assertTrue(admin_user.is_staff)
-        self.assertTrue(admin_user.is_superuser)
-        try:
-            self.assertIsNone(admin_user.username)
-        except AttributeError:
-            pass
-        with self.assertRaises(ValueError):
-            User.objects.create_superuser(email='super@user.com', password='foo', is_superuser=False)
+    def test_list_all_users_as_admin(self):
+        """ Test fetching all users. Restricted to admins """
+        # Setup the token
+        url = reverse('login')
+        data = {'email': 'admin@test.com', 'password': 'admin'}
+        response = self.client.post(url, data)
+        login_response_data = json.loads(response.content)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue('access' in login_response_data)
+        token = login_response_data['access']
 
+        # Test the endpoint
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='JWT ' + token)
+        response = client.get(reverse('users'))
+        response_data = json.loads(response.content)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(User.objects.count(), len(response_data['users']))
+
+    def test_access_denied_all_users(self):
+        """ Test fetching all users. Restricted to admins """
+        # Setup the token
+        url = reverse('login')
+        data = {'email': 'test1@test.com', 'password': 'test'}
+        response = self.client.post(url, data)
+        login_response_data = json.loads(response.content)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue('access' in login_response_data)
+        token = login_response_data['access']
+
+        # Test the endpoint
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='JWT ' + token)
+        response = client.get(reverse('users'))
+        response_data = json.loads(response.content)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse(response_data['success'])
