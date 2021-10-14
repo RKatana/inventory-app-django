@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -102,6 +103,7 @@ else:
             'NAME': environ.get('DB_NAME'),
             'USER': environ.get('DB_USER'),
             'PASSWORD': environ.get('DB_PASSWORD'),
+            'HOST': environ.get('DB_HOST'),
         }
     }
 
