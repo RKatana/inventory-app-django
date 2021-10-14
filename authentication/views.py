@@ -54,6 +54,7 @@ class UserListView(APIView):
     serializer_class = UserListSerializer
     permission_classes = (IsAuthenticated,)
 
+
     def get(self, request):
         user =  request.user
         if user.role != 1:
