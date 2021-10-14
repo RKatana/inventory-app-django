@@ -64,6 +64,7 @@ class Profile(models.Model):
     occupation = models.TextField(blank=True, null=True)
     phone = models.IntegerField(blank=True, null=True)
 
+
     @receiver(post_save, sender=get_user_model())
     def create_user_profile(sender, instance, created, **kwargs):
         if created:

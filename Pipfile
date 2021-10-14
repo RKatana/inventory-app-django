@@ -18,6 +18,8 @@ social-auth-app-django = "*"
 coverage = "*"
 coreapi = "*"
 markdown = "*"
+gunicorn = "*"
+pyjwt = "==2.0.1"
 
 [dev-packages]
 
