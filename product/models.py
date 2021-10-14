@@ -5,7 +5,7 @@ from django.db import models
 class Product(models.Model):
   product_name =  models.CharField(max_length=200)
   product_desc = models.TextField(blank=True, null=True)
-  product_quantity = models.IntegerField(max_length=250)
+  product_quantity = models.IntegerField(blank=True, null=True)
   product_bp = models.IntegerField(blank=True, null=True)
   product_sp = models.IntegerField(blank=True, null=True)
   product_payment = models.IntegerField(blank=True, null=True)
