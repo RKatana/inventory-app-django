@@ -46,9 +46,9 @@ INSTALLED_APPS = [
     'cloudinary',
     'rest_framework',
     'rest_framework.authtoken',
-    'rest_framework_swagger',
     'djoser',
     'rest_framework_simplejwt',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
