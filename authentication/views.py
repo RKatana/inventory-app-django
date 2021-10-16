@@ -1,10 +1,14 @@
-from rest_framework import status
+from django.conf import settings
+from rest_framework import generics, status
 from rest_framework.views import APIView
-from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserListSerializer
+from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserListSerializer, EmailVerificationSerializer
 from rest_framework.permissions import AllowAny,IsAuthenticated
-#from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
+import jwt
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from .models import User
+
 
 
 # Create your views here.
@@ -12,6 +16,8 @@ class AuthUserRegistrationView(APIView):
     serializer_class = UserRegistrationSerializer
     permission_classes = (AllowAny,)
 
+
+    @swagger_auto_schema(request_body=UserRegistrationSerializer, responses={201: UserRegistrationSerializer(many=True)}, operation_description="description")
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         valid = serializer.is_valid(raise_exception=True)
@@ -74,3 +80,24 @@ class UserListView(APIView):
                 'users': serializer.data,
             }
             return Response(response, status=status.HTTP_200_OK)
+
+
+class VerifyEmailView(APIView):
+    serializer_class = EmailVerificationSerializer
+
+    token_param_config = openapi.Parameter('token', in_=openapi.IN_QUERY,description='Description',type=openapi.TYPE_STRING)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def get(self, request):
+        token = request.GET.get('token')
+        try:
+            payload = jwt.decode(token,settings.SECRET_KEY)
+            user = User.objects.get(id=payload['user.role'])
+            if not user.is_verified:
+                user.is_verified = True
+                user.save()
+            return Response({'email': 'Successfully activated'}, status=status.HTTP_200_OK)
+        except jwt.ExpiredSignatureError as identifier:
+            return Response({'error': 'Activation Expired'}, status=status.HTTP_400_BAD_REQUEST)
+        except jwt.exceptions.DecodeError as identifier:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
