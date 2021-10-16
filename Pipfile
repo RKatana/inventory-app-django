@@ -20,6 +20,8 @@ coreapi = "*"
 markdown = "*"
 gunicorn = "*"
 pyjwt = "==2.0.1"
+whitenoise = "*"
+drf-yasg = "*"
 
 [dev-packages]
 
