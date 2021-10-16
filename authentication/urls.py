@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework_simplejwt import views as jwt_views
-from .views import AuthUserRegistrationView,AuthUserLoginView,UserListView, VerifyEmailView
+from .views import AuthUserRegistrationView,AuthUserLoginView,UserListView
 
 
 urlpatterns = [
@@ -9,5 +9,4 @@ urlpatterns = [
     path('register/', AuthUserRegistrationView.as_view(), name='register'),
     path('login/', AuthUserLoginView.as_view(), name='login'),
     path('users/', UserListView.as_view(), name='users'),
-    path('verify_email/', VerifyEmailView.as_view(), name='verify_email')
 ]

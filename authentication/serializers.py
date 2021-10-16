@@ -72,13 +72,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'profile_pic', 'bio', 'occupation', 'phone', 'url')
 
 
-class EmailVerificationSerializer(serializers.ModelSerializer):
-    token = serializers.CharField(max_length=600)
-
-    class Meta:
-        model = User
-        fields = ['token']
-
 
 
 
