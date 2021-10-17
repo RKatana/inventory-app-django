@@ -1,7 +1,6 @@
 from django.contrib.auth.models import update_last_login
 from rest_framework import serializers
-from django.contrib.auth import authenticate, get_user_model
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Profile, User
 from django.utils.translation import ugettext_lazy as _
@@ -12,7 +11,7 @@ from django.contrib.auth.hashers import make_password
 class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email', 'password',)
+        fields = ('name','email', 'password',)
         
     def create(self, validated_data):
         auth_user = User.objects.create_user(**validated_data)
@@ -67,18 +66,11 @@ class UserListSerializer(serializers.ModelSerializer):
         fields = ('email', 'role')
 
 
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super(MyTokenObtainPairSerializer,cls).get_token(user)
-        token['email'] = user.email
-        return token
-
-
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile 
         fields = ('id', 'username', 'profile_pic', 'bio', 'occupation', 'phone', 'url')
+
 
 
 

@@ -1,10 +1,14 @@
-from rest_framework import status
+from django.conf import settings
+from rest_framework import generics, status
 from rest_framework.views import APIView
 from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserListSerializer
 from rest_framework.permissions import AllowAny,IsAuthenticated
-#from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
+import jwt
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from .models import User
+
 
 
 # Create your views here.
@@ -12,6 +16,8 @@ class AuthUserRegistrationView(APIView):
     serializer_class = UserRegistrationSerializer
     permission_classes = (AllowAny,)
 
+
+    @swagger_auto_schema(request_body=UserRegistrationSerializer, responses={201: UserRegistrationSerializer(many=True)})
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         valid = serializer.is_valid(raise_exception=True)
@@ -31,6 +37,7 @@ class AuthUserLoginView(APIView):
     serializer_class = UserLoginSerializer
     permission_classes = (AllowAny,)
 
+    @swagger_auto_schema(request_body=UserLoginSerializer, responses={200: UserRegistrationSerializer(many=True)})
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         valid = serializer.is_valid(raise_exception=True)
@@ -54,7 +61,10 @@ class UserListView(APIView):
     serializer_class = UserListSerializer
     permission_classes = (IsAuthenticated,)
 
+    user_param = openapi.Parameter('user', in_=openapi.IN_QUERY,description='user manual param',type=openapi.TYPE_STRING)
+    
 
+    @swagger_auto_schema(manual_parameters=[user_param], responses={200: UserListSerializer(many=True)})
     def get(self, request):
         user =  request.user
         if user.role != 1:
@@ -74,3 +84,5 @@ class UserListView(APIView):
                 'users': serializer.data,
             }
             return Response(response, status=status.HTTP_200_OK)
+
+
