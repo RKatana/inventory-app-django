@@ -33,7 +33,7 @@ class StoreListView(APIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
-class  CreateStoreView(APIView):
+class CreateStoreView(APIView):
       
     serializer_class = StoreListSerializer
     permission_classes = (AllowAny,)
