@@ -53,7 +53,7 @@ class ProductByIdView(APIView):
     @swagger_auto_schema(manual_parameters=[], responses={200: ProductSerializer(many=True)})
     def get(self, request, uid):
         product = Product.objects.get(id=uid)
-        serializer = self.serializer_class(store, many=True)
+        serializer = self.serializer_class(product, many=True)
         response = {
             'success': True,
             'status_code': status.HTTP_200_OK,
