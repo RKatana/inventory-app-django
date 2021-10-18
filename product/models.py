@@ -26,13 +26,5 @@ class Product(models.Model):
   def update_product(cls, id, productchange):
     cls.objects.filter(id = id).update(product = productchange)
 
-  @classmethod
-  def get_products_by_id(cls, id):
-    try:
-      product = cls.objects.get(id=id)
-      return product
-    except Product.DoesNotExist:
-      print('Product does not exist')
-      
   def __str__(self):
     return self.name
