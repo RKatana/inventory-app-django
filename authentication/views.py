@@ -50,8 +50,9 @@ class AuthUserLoginView(APIView):
                 'access': serializer.data['access'],
                 'refresh': serializer.data['access'],
                 'authenticatedUser': {
+                    'name': serializer.data['name'],
                     'email': serializer.data['email'],
-                    'role': serializer.data['role']
+                    'role': serializer.data['role'],
                 }
             }
             return Response(response, status=status_code)
