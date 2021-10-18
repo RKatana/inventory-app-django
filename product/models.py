@@ -1,8 +1,11 @@
+import uuid
 from django.db import models
 from store.models import Store
+from django.utils import timezone
 # Create your models here.
 
 class Product(models.Model):
+  uid = models.UUIDField(unique=True, editable=False, default=uuid.uuid4, verbose_name='Public identifier')
   name =  models.CharField(max_length=200) 
   quantity = models.IntegerField(blank=True, null=True)
   buying_price = models.IntegerField(blank=True, null=True)
@@ -32,4 +35,4 @@ class Product(models.Model):
       print('Product does not exist')
       
   def __str__(self):
-    return self.product_name
+    return self.name
