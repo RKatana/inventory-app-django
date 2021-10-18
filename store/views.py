@@ -1,82 +1,54 @@
-from django.shortcuts import render
+import uuid
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from authentication.models import User
-
-from authentication.serializers import UserStoreListSerializer, UserRegistrationSerializer
-from .serializer import StoreSerializer
+from .serializer import StoreListSerializer
 from .models import Store
 from rest_framework.decorators import action
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
+from drf_yasg import openapi
+
 
 
 # Create your views here.
 
-class AuthUserRegistrationView(APIView):
-    serializer_class = UserRegistrationSerializer
-    permission_classes = (AllowAny, )
-
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        valid = serializer.is_valid(raise_exception=True)
-
-        if valid:
-            serializer.save()
-            status_code = status.HTTP_201_CREATED
-
-            response = {
-                'success': True,
-                'statusCode': status_code,
-                'message': 'User successfully registered!',
-                'user': serializer.data
-            }
-
-            return Response(response, status=status_code)
-
 class StoreListView(APIView):
-    serializer_class = UserStoreListSerializer
-    permission_classes = (IsAuthenticated,)
-
+    serializer_class = StoreListSerializer
+    permission_classes = (AllowAny,)
+    
+    @swagger_auto_schema(manual_parameters=[], responses={200: StoreListSerializer(many=True)})
     def get(self, request):
-        user = request.user
-        if user.role != 2:
-            response = {
-                'success': False,
-                'status_code': status.HTTP_403_FORBIDDEN,
-                'message': 'You are not authorized to perform this action'
-            }
-            return Response(response, status.HTTP_403_FORBIDDEN)
-        else:
-            users = User.objects.all()
-            serializer = self.serializer_class(users, many=True)
-            response = {
-                'success': True,
-                'status_code': status.HTTP_200_OK,
-                'message': 'Successfully fetched users',
-                'users': serializer.data
-
-            }
-            return Response(response, status=status.HTTP_200_OK)
+        stores = Store.object.all()
+        serializer = self.serializer_class(stores, many = True)
+        response = {
+            'success': True,
+            'status_code': status.HTTP_200_OK,
+            'message': 'Successfully fetched stores',
+            'stores': serializer.data,
+        }
+        return Response(response, status=status.HTTP_200_OK)
 
 
-class StoreViewSet(ReadOnlyModelViewSet):
+class StoreByIdView(APIView):
         
-    serializer_class = StoreSerializer
-    queryset = Store.objects.all()
+    serializer_class = StoreListSerializer
+    permission_classes = (AllowAny,)
+    
+    @swagger_auto_schema(manual_parameters=[], responses={200: StoreListSerializer(many=True)})
+    def get(self,request,uid):
+        store = Store.objects.get(id=uid)
+        serializer = self.serializer_class(store, many = True)
+        response = {
+            'success': True,
+            'status_code': status.HTTP_200_OK,
+            'message': 'Successfully fetched store',
+            'store': serializer.data,
+        }
+        return Response(response, status=status.HTTP_200_OK)
     
     
-    @action(detail=False)
-    def get_list(self, request):
-        pass
-      
-    @action(detail=True)
-    def get_store(self, request, pk=None):
-        pass
-
-
-    @action(detail=True, methods=['post', 'delete'])
-    def delete_store(self, request, pk=None):
-        pass
+   
