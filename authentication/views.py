@@ -1,10 +1,8 @@
-from django.conf import settings
-from rest_framework import generics, status
+from rest_framework import status
 from rest_framework.views import APIView
 from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserListSerializer
 from rest_framework.permissions import AllowAny,IsAuthenticated
 from rest_framework.response import Response
-import jwt
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from .models import User
@@ -50,8 +48,9 @@ class AuthUserLoginView(APIView):
                 'access': serializer.data['access'],
                 'refresh': serializer.data['access'],
                 'authenticatedUser': {
+                    'name': serializer.data['name'],
                     'email': serializer.data['email'],
-                    'role': serializer.data['role']
+                    'role': serializer.data['role'],
                 }
             }
             return Response(response, status=status_code)

@@ -11,7 +11,7 @@ from django.contrib.auth.hashers import make_password
 class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('name','email', 'password',)
+        fields = ('name','email', 'password', 'role')
         
     def create(self, validated_data):
         auth_user = User.objects.create_user(**validated_data)
@@ -24,6 +24,7 @@ class UserLoginSerializer(serializers.Serializer):
     access = serializers.CharField(read_only=True)
     refresh = serializers.CharField(read_only=True)
     role = serializers.CharField(read_only=True)
+    name = serializers.CharField(read_only=True)
 
     def create(self, validated_data):
         pass
@@ -50,6 +51,7 @@ class UserLoginSerializer(serializers.Serializer):
             validation = {
                 'access': access_token,
                 'refresh': refresh_token,
+                'name': user.name,
                 'email': user.email,
                 'role': user.role
             }
@@ -63,25 +65,10 @@ class UserLoginSerializer(serializers.Serializer):
 class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email', 'role')
+        fields = ('name','email', 'role')
 
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile 
         fields = ('id', 'username', 'profile_pic', 'bio', 'occupation', 'phone', 'url')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

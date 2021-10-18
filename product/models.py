@@ -1,15 +1,19 @@
+import uuid
 from django.db import models
-
+from store.models import Store
+from django.utils import timezone
 # Create your models here.
 
 class Product(models.Model):
-  product_name =  models.CharField(max_length=200)
-  product_desc = models.TextField(blank=True, null=True)
-  product_quantity = models.IntegerField(blank=True, null=True)
-  product_bp = models.IntegerField(blank=True, null=True)
-  product_sp = models.IntegerField(blank=True, null=True)
-  product_payment = models.IntegerField(blank=True, null=True)
+  uid = models.UUIDField(unique=True, editable=False, default=uuid.uuid4, verbose_name='Public identifier')
+  name =  models.CharField(max_length=200) 
+  quantity = models.IntegerField(blank=True, null=True)
+  buying_price = models.IntegerField(blank=True, null=True)
+  selling_price = models.IntegerField(blank=True, null=True)
+  spoilt = models.IntegerField(blank=True, null=True)
+  payment_status = models.BooleanField(blank=True, null=True)
   date_upload = models.DateTimeField(auto_now_add=True)
+  store = models.ManyToManyField( Store )
 
   def save_product(self):
     self.save()
@@ -22,13 +26,5 @@ class Product(models.Model):
   def update_product(cls, id, productchange):
     cls.objects.filter(id = id).update(product = productchange)
 
-  @classmethod
-  def get_products_by_id(cls, id):
-    try:
-      product = cls.objects.get(id=id)
-      return product
-    except Product.DoesNotExist:
-      print('Product does not exist')
-      
   def __str__(self):
-    return self.product_name
+    return self.name
