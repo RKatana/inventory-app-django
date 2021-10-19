@@ -11,7 +11,8 @@ from django.contrib.auth.hashers import make_password
 class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id','name','email', 'password', 'role')
+        fields = ('id','name','email', 'password', 'role', 'store')
+        read_only_fields = ('role',)
         
     def create(self, validated_data):
         auth_user = User.objects.create_user(**validated_data)
@@ -33,7 +34,8 @@ class MerchantRegistrationSerializer(serializers.ModelSerializer):
 class StoreAdminRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = StoreAdmin
-        fields = ('id','name','email', 'password', 'role')
+        fields = ('id','name','email', 'password', 'role', 'store')
+        read_only_fields = ('role',)
         
     def create(self, validated_data):
         auth_user = StoreAdmin.objects.create_user(**validated_data)

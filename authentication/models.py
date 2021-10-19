@@ -7,6 +7,7 @@ from django.utils import timezone
 from cloudinary.models import CloudinaryField
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from store.models import Store
 
 from .managers import UserManager
 
@@ -34,6 +35,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     modified_date = models.DateTimeField(default=timezone.now)
     created_by = models.EmailField(blank=True, null=True)
     modified_by = models.EmailField(blank=True, null=True)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, blank=True, null=True)
     
 
     USERNAME_FIELD = 'email'
@@ -53,18 +55,24 @@ class User(AbstractBaseUser,PermissionsMixin):
 
 
 class Merchant(User):
+    
+    objects = UserManager()
+    store = None
+
     class Meta:
         proxy = True
+        
 
     def save(self, *args, **kwargs):
         if not self.pk:
             self.role = User.Roles.Merchant
             self.set_password(self.password)
             self.email=self.email
-        super(Merchant,self).save(*args, **kwargs)
+        super(Merchant, self).save(*args, **kwargs)
 
 
 class StoreAdmin(User):
+    objects = UserManager()
     class Meta:
         proxy = True
 
@@ -73,7 +81,7 @@ class StoreAdmin(User):
             self.role = User.Roles.Store_admin
             self.set_password(self.password)
             self.email=self.email
-        super(StoreAdmin,self).save(*args, **kwargs)
+        super(StoreAdmin, self).save(*args, **kwargs)
 
 
 # class profile
