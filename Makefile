@@ -20,6 +20,9 @@ makemigrations:
 migrate:
 	python manage.py migrate
 
+herokumigrate:
+	heroku run python manage.py migrate
+
 superuser:
 	python manage.py createsuperuser
 
