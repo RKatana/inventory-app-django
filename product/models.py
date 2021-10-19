@@ -13,7 +13,7 @@ class Product(models.Model):
   spoilt = models.IntegerField(blank=True, null=True)
   payment_status = models.BooleanField(blank=True, null=True)
   date_upload = models.DateTimeField(auto_now_add=True)
-  store = models.ManyToManyField( Store )
+  store = models.ForeignKey(Store, on_delete=models.CASCADE, blank=True, null=True)
 
   def save_product(self):
     self.save()

@@ -6,6 +6,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.response import Response
 from rest_framework import status
+from .permissions import IsMerchant
 # Create your views here.
 
 class  CreateProductView(APIView):
@@ -30,7 +31,7 @@ class  CreateProductView(APIView):
         
 class ProductListView(APIView):    
     serializer_class = ProductSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (IsMerchant,)
     
     @swagger_auto_schema(manual_parameters=[], responses={200: ProductSerializer(many=True)})
     def get(self, request):
