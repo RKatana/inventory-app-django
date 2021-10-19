@@ -2,7 +2,7 @@ from django.contrib.auth.models import update_last_login
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Profile, User
+from .models import Merchant, Profile, StoreAdmin, User
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.hashers import make_password
 
@@ -16,9 +16,32 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         auth_user = User.objects.create_user(**validated_data)
         return auth_user
+
+
+class MerchantRegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(max_length=128, write_only=True)
+    class Meta:
+        model = Merchant
+        fields = ('id','name','email', 'password', 'role')
+        read_only_fields = ('role',)
+        
+    def create(self, validated_data):
+        auth_user = Merchant.objects.create_user(**validated_data)
+        return auth_user
+
+
+class StoreAdminRegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StoreAdmin
+        fields = ('id','name','email', 'password', 'role')
+        
+    def create(self, validated_data):
+        auth_user = StoreAdmin.objects.create_user(**validated_data)
+        return auth_user
     
 
 class UserLoginSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
     email = serializers.EmailField()
     password = serializers.CharField(max_length=128, write_only=True)
     access = serializers.CharField(read_only=True)
@@ -51,6 +74,7 @@ class UserLoginSerializer(serializers.Serializer):
             validation = {
                 'access': access_token,
                 'refresh': refresh_token,
+                'id': user.id,
                 'name': user.name,
                 'email': user.email,
                 'role': user.role

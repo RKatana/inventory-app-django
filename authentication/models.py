@@ -12,16 +12,13 @@ from .managers import UserManager
 
 # Create your models here.
 class User(AbstractBaseUser,PermissionsMixin):
-    #User Roles
-    MERCHANT = 1
-    STORE_ADMIN = 2
-    CLERK = 3
+    
 
-    ROLE_CHOICES = (
-        (MERCHANT,'Merchant'),
-        (STORE_ADMIN,'Store_admin'),
-        (CLERK,'Clerk')
-    )
+    class Roles(models.TextChoices):
+        Merchant = "Merchant", "merchant"
+        Store_admin = "Store_admin", "store_admin"
+        Clerk = "Clerk", "clerk"
+
 
     class Meta:
         verbose_name = 'user'
@@ -29,7 +26,7 @@ class User(AbstractBaseUser,PermissionsMixin):
 
     email = models.EmailField(max_length=254, unique=True)
     name = models.CharField(max_length=254, null=True, blank=True)
-    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, null=True)
+    role = models.CharField(max_length=255, choices= Roles.choices, blank=True, null=True, default=Roles.Clerk)
     is_active = models.BooleanField(default=True)
     last_login = models.DateTimeField(null=True, blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -53,6 +50,30 @@ class User(AbstractBaseUser,PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class Merchant(User):
+    class Meta:
+        proxy = True
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.role = User.Roles.Merchant
+            self.set_password(self.password)
+            self.email=self.email
+        super(Merchant,self).save(*args, **kwargs)
+
+
+class StoreAdmin(User):
+    class Meta:
+        proxy = True
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.role = User.Roles.Store_admin
+            self.set_password(self.password)
+            self.email=self.email
+        super(StoreAdmin,self).save(*args, **kwargs)
 
 
 # class profile
