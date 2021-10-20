@@ -113,9 +113,8 @@ class ProductByIdView(APIView):
             'product': serializer.data,
         }
         return Response(response, status=status.HTTP_200_OK)
-    
 
-    @swagger_auto_schema(query_serializer=ProductSerializer, responses={200: ProductSerializer(many=True)})
+    @swagger_auto_schema(responses={200: ProductSerializer(many=True)})
     def delete(self, request, pk):
         product = Product.objects.get(id=pk)
         serializer = self.serializer_class(product, many=True)
@@ -133,9 +132,9 @@ class ProductByStoreIdView(APIView):
     serializer_class = ProductSerializer
     permission_classes = (AllowAny,)
 
-    @swagger_auto_schema(query_serializer=ProductListSerializer, responses={200: ProductSerializer(many=True)})
-    def get(self, request, pk):
-        product = Product.objects.filter(id=pk)
+    @swagger_auto_schema(responses={200: ProductSerializer(many=True)})
+    def get(self, request,pk):
+        product = Product.objects.filter(store__id=pk)
         serializer = self.serializer_class(product, many=True)
         response = {
             'success': True,
