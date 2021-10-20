@@ -6,7 +6,7 @@ from .models import Store
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, BasePermission
 from drf_yasg import openapi
 from rest_framework.schemas import AutoSchema, coreapi
 from rest_framework.decorators import api_view
@@ -147,6 +147,22 @@ class StoreByIdView(APIView):
         }
         return Response(response, status=status.HTTP_200_OK)
     
+class IsAuthenticatedAndOwner(BasePermission):
+    message = 'You must be the owner of this object.'
+    edit_methods = ('GET','DELETE','PUT','PATCH',)
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated
+    def has_object_permission(self, request, view, obj):
+        if request.user.role == 'Merchant':
+            return True
+        return obj.user == request.user
     
+    
+class CreateStoreupdateAPIView(APIView):
+    serializer_class = StoreListSerializer
+    stores = Store.objects.all()
+    lookup_field = 'pk'
+    permissions_classes = [IsAuthenticatedAndOwner]
+
    
   
