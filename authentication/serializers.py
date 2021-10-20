@@ -31,14 +31,14 @@ class ClerkRegistrationSerializer(serializers.ModelSerializer):
         
 
 
-# class StoreAdminRegistrationSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = StoreAdmin
-#         fields = ('id','name','email', 'password', 'role',)
-#         read_only_fields = ('role',)
+class StoreAdminRegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StoreAdmin
+        fields = ('id','name','email', 'password', 'role',)
+        read_only_fields = ('role',)
         
-#     def create(self, validated_data):
-#         return StoreAdmin.objects.create_storeadmin(**validated_data)
+    def create(self, validated_data):
+        return StoreAdmin.objects.create_storeadmin(**validated_data)
         
     
 
