@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from store.models import Store
+from authentication.models import User
 from django.utils import timezone
 # Create your models here.
 
@@ -14,6 +15,7 @@ class Product(models.Model):
   payment_status = models.BooleanField(blank=True, null=True)
   date_upload = models.DateTimeField(auto_now_add=True)
   store = models.ForeignKey(Store, on_delete=models.CASCADE, blank=True, null=True)
+
 
   def save_product(self):
     self.save()

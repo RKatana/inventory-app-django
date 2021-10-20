@@ -144,3 +144,9 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile 
         fields = ('id', 'username', 'profile_pic', 'bio', 'occupation', 'phone', 'url')
+
+
+class UserRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('role',)
