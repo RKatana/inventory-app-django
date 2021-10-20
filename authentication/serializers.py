@@ -22,13 +22,13 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 class MerchantRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=128, write_only=True)
     class Meta:
-        model = Merchant
+        model = User
         fields = ('id','name','email', 'password', 'role')
         read_only_fields = ('role',)
         
     def create(self, validated_data):
-        auth_user = Merchant.objects.create_user(**validated_data)
-        return auth_user
+        return Merchant.objects.create_user(**validated_data)
+        
 
 
 class StoreAdminRegistrationSerializer(serializers.ModelSerializer):
@@ -38,8 +38,8 @@ class StoreAdminRegistrationSerializer(serializers.ModelSerializer):
         read_only_fields = ('role',)
         
     def create(self, validated_data):
-        auth_user = StoreAdmin.objects.create_user(**validated_data)
-        return auth_user
+        return StoreAdmin.objects.create_storeadmin(**validated_data)
+        
     
 
 class UserLoginSerializer(serializers.Serializer):
@@ -85,6 +85,52 @@ class UserLoginSerializer(serializers.Serializer):
             return validation
 
         except User.DoesNotExist:
+            raise serializers.ValidationError('Invalid login credentials')
+
+
+class MerchantLoginSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    email = serializers.EmailField()
+    password = serializers.CharField(max_length=128, write_only=True)
+    access = serializers.CharField(read_only=True)
+    refresh = serializers.CharField(read_only=True)
+    role = serializers.CharField(read_only=True)
+    name = serializers.CharField(read_only=True)
+
+    def create(self, validated_data):
+        pass
+
+
+    def update(self, instance, validated_data):
+        pass
+
+    def validate(self, data):
+        email = data['email']
+        password = data['password']
+        merchant = authenticate(email=email, password=password)
+
+        if merchant is None:
+            raise serializers.ValidationError("Invalid login credentials")
+        
+        try:
+            refresh = RefreshToken.for_user(merchant)
+            refresh_token = str(refresh)
+            access_token = str(refresh.access_token)
+
+            update_last_login(None, merchant)
+
+            validation = {
+                'access': access_token,
+                'refresh': refresh_token,
+                'id': merchant.id,
+                'name': merchant.name,
+                'email': merchant.email,
+                'role': merchant.role
+            }
+
+            return validation
+
+        except Merchant.DoesNotExist:
             raise serializers.ValidationError('Invalid login credentials')
 
 
