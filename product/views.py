@@ -73,7 +73,7 @@ class ProductListView(APIView):
         }
         return Response(response, status=status.HTTP_200_OK)
     
-    
+
 class ProductByIdView(APIView):
 
     serializer_class = ProductSerializer
