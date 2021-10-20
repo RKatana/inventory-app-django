@@ -10,6 +10,8 @@ from django.db.models.signals import post_save
 from store.models import Store
 from django.utils.translation import gettext_lazy as _
 
+from store.models import Store
+
 from .managers import UserManager
 
 # Create your models here.
@@ -34,6 +36,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     modified_date = models.DateTimeField(default=timezone.now)
     created_by = models.EmailField(blank=True, null=True)
     modified_by = models.EmailField(blank=True, null=True)
+
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
