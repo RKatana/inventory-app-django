@@ -1,16 +1,15 @@
-import uuid
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.views import APIView
-from rest_framework.viewsets import ReadOnlyModelViewSet
 from authentication.models import User
-from .serializer import StoreListSerializer
+from .serializer import StoreListSerializer,StoreSerializer
 from .models import Store
-from rest_framework.decorators import action
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from drf_yasg import openapi
+from rest_framework.schemas import AutoSchema, coreapi
+from rest_framework.decorators import api_view
 
 
 
@@ -19,10 +18,11 @@ from drf_yasg import openapi
 class StoreListView(APIView):
     serializer_class = StoreListSerializer
     permission_classes = (AllowAny,)
-    
-    @swagger_auto_schema(manual_parameters=[], responses={200: StoreListSerializer(many=True)})
+
+
+    @swagger_auto_schema(query_serializer=StoreSerializer, responses={200: StoreSerializer(many=True)})
     def get(self, request):
-        stores = Store.object.all()
+        stores = Store.objects.all()
         serializer = self.serializer_class(stores, many = True)
         response = {
             'success': True,
@@ -58,7 +58,7 @@ class StoreByIdView(APIView):
     serializer_class = StoreListSerializer
     permission_classes = (AllowAny,)
     
-    @swagger_auto_schema(manual_parameters=[], responses={200: StoreListSerializer(many=True)})
+    @swagger_auto_schema(query_serializer=StoreSerializer, responses={200: StoreSerializer(many=True)})
     def get(self,request,uid):
         store = Store.objects.get(id=uid)
         serializer = self.serializer_class(store, many = True)
@@ -72,3 +72,4 @@ class StoreByIdView(APIView):
     
     
    
+  
