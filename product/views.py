@@ -102,4 +102,4 @@ class ProductByIdView(APIView):
             'product': serializer.data,
         }
         return Response(response, status=status.HTTP_200_OK)
-   
+
