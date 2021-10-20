@@ -8,18 +8,17 @@ from cloudinary.models import CloudinaryField
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from store.models import Store
+from django.utils.translation import gettext_lazy as _
 
 from .managers import UserManager
 
 # Create your models here.
 class User(AbstractBaseUser,PermissionsMixin):
-    
 
     class Roles(models.TextChoices):
-        Merchant = "Merchant", "merchant"
-        Store_admin = "Store_admin", "store_admin"
-        Clerk = "Clerk", "clerk"
-
+        MERCHANT="MERCHANT", "Merchant"
+        STOREADMIN="STOREADMIN", "Storeadmin"
+        CLERK="CLERK", "Clerk"
 
     class Meta:
         verbose_name = 'user'
@@ -27,7 +26,7 @@ class User(AbstractBaseUser,PermissionsMixin):
 
     email = models.EmailField(max_length=254, unique=True)
     name = models.CharField(max_length=254, null=True, blank=True)
-    role = models.CharField(max_length=255, choices= Roles.choices, blank=True, null=True, default=Roles.Clerk)
+    role = models.CharField(_("role"), max_length=255, choices=Roles.choices, blank=True, null=True, default=Roles.CLERK)
     is_active = models.BooleanField(default=True)
     last_login = models.DateTimeField(null=True, blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -35,8 +34,6 @@ class User(AbstractBaseUser,PermissionsMixin):
     modified_date = models.DateTimeField(default=timezone.now)
     created_by = models.EmailField(blank=True, null=True)
     modified_by = models.EmailField(blank=True, null=True)
-    store = models.ForeignKey(Store, on_delete=models.CASCADE, blank=True, null=True)
-    
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -56,16 +53,12 @@ class User(AbstractBaseUser,PermissionsMixin):
 
 class Merchant(User):
     
-    objects = UserManager()
-    store = None
-
     class Meta:
         proxy = True
-        
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.role = User.Roles.Merchant
+            self.role = User.Roles.MERCHANT
             self.set_password(self.password)
             self.email=self.email
         super(Merchant, self).save(*args, **kwargs)
@@ -78,7 +71,7 @@ class StoreAdmin(User):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.role = User.Roles.Store_admin
+            self.role = User.Roles.STOREADMIN
             self.set_password(self.password)
             self.email=self.email
         super(StoreAdmin, self).save(*args, **kwargs)

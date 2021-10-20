@@ -8,12 +8,10 @@ from django.db.models.deletion import CASCADE
 
 
 # Create your models here.
-   
 class Store(models.Model):
 	name = models.CharField(max_length=100)
 	location = models.CharField(max_length=100)
-	uid = models.UUIDField(unique=True, editable=False, default=uuid.uuid4, verbose_name='Public identifier')
-	
+	uid = models.UUIDField(unique=True, editable=False, default=uuid.uuid4, verbose_name='Public identifier')	
 	
     
 	def __str__(self):

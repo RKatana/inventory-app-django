@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.views import APIView
-from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserListSerializer, MerchantRegistrationSerializer, StoreAdminRegistrationSerializer
+from .serializers import MerchantLoginSerializer, UserRegistrationSerializer, UserLoginSerializer, UserListSerializer, MerchantRegistrationSerializer, StoreAdminRegistrationSerializer, MerchantLoginSerializer
 from rest_framework.permissions import AllowAny,IsAuthenticated
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
@@ -77,7 +77,7 @@ class AuthUserLoginView(APIView):
     serializer_class = UserLoginSerializer
     permission_classes = (AllowAny,)
 
-    @swagger_auto_schema(request_body=UserLoginSerializer, responses={200: UserRegistrationSerializer(many=True)})
+    @swagger_auto_schema(request_body=UserLoginSerializer, responses={200: UserLoginSerializer(many=True)})
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         valid = serializer.is_valid(raise_exception=True)
@@ -99,16 +99,40 @@ class AuthUserLoginView(APIView):
             return Response(response, status=status_code)
 
 
+class MerchantLoginView(APIView):
+    serializer_class = MerchantLoginSerializer
+    permission_classes = (AllowAny,)
+
+    @swagger_auto_schema(request_body=MerchantLoginSerializer, responses={200: MerchantLoginSerializer(many=True)})
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        valid = serializer.is_valid(raise_exception=True)
+        if valid:
+            status_code = status.HTTP_200_OK
+            response = {
+                'success': True,
+                'statusCode': status_code,
+                'message': 'Merchant logged in successfully',
+                'access': serializer.data['access'],
+                'refresh': serializer.data['access'],
+                'authenticatedUser': {
+                    'id': serializer.data['id'],
+                    'name': serializer.data['name'],
+                    'email': serializer.data['email'],
+                    'role': serializer.data['role'],
+                }
+            }
+            return Response(response, status=status_code)
+
+
 class UserListView(APIView):
     serializer_class = UserListSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
-    user_param = openapi.Parameter('user', in_=openapi.IN_QUERY,description='user manual param',type=openapi.TYPE_STRING)
-
-    @swagger_auto_schema(manual_parameters=[user_param], responses={200: UserListSerializer(many=True)})
+    @swagger_auto_schema(query_serializer=UserListSerializer, responses={200: UserListSerializer(many=True)})
     def get(self, request):
         user =  request.user
-        if user.role != 1:
+        if user.role != 'Clerk':
             response = {
                 'success': False,
                 'status_code': status.HTTP_403_FORBIDDEN,
