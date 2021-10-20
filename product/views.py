@@ -1,4 +1,4 @@
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, ProductistSerializer
 from .models import Product
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
@@ -10,7 +10,7 @@ from .permissions import IsMerchant
 # Create your views here.
 
 class  CreateProductView(APIView):
-      
+    
     serializer_class = ProductSerializer
     permission_classes = (AllowAny,)
     
@@ -43,13 +43,14 @@ class  CreateProductView(APIView):
                 'product': serializer.data
             }
             return Response(response, status=status_code)
-        
+
+
 class ProductListView(APIView):    
     serializer_class = ProductSerializer
     permission_classes = (IsMerchant,)
     
-    @swagger_auto_schema(manual_parameters=[], responses={200: ProductSerializer(many=True)})
-    def get(self, request):
+    @swagger_auto_schema(query_serializer=ProductistSerializer, responses={200: ProductSerializer(many=True)})
+    def get(self,request):
         products = Product.objects.all()
         serializer = self.serializer_class(products, many=True)
         response = {
@@ -78,7 +79,7 @@ class ProductByIdView(APIView):
     serializer_class = ProductSerializer
     permission_classes = (AllowAny,)
 
-    @swagger_auto_schema(manual_parameters=[], responses={200: ProductSerializer(many=True)})
+    @swagger_auto_schema(query_serializer=ProductistSerializer, responses={200: ProductSerializer(many=True)})
     def get(self, request, uid):
         product = Product.objects.get(id=uid)
         serializer = self.serializer_class(product, many=True)

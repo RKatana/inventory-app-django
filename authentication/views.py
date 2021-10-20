@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.views import APIView
-from .serializers import ClerkLoginSerializer, UserRegistrationSerializer, UserLoginSerializer, UserListSerializer, ClerkRegistrationSerializer, StoreAdminRegistrationSerializer
+from .serializers import ClerkLoginSerializer, UserRegistrationSerializer, UserLoginSerializer, UserListSerializer, ClerkRegistrationSerializer, StoreAdminRegistrationSerializer, UserRequestSerializer
 from rest_framework.permissions import AllowAny,IsAuthenticated
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
@@ -129,25 +129,25 @@ class UserListView(APIView):
     serializer_class = UserListSerializer
     permission_classes = (AllowAny,)
 
-    @swagger_auto_schema(query_serializer=UserListSerializer, responses={200: UserListSerializer(many=True)})
+    @swagger_auto_schema(query_serializer=UserRequestSerializer, responses={200: UserListSerializer(many=True)})
     def get(self, request):
-        user =  request.user
-        if user.role != 'Clerk':
-            response = {
-                'success': False,
-                'status_code': status.HTTP_403_FORBIDDEN,
-                'message':'You are not authorized to perform this action',
-            }
-            return Response(response, status.HTTP_403_FORBIDDEN)
-        else:
-            users = User.objects.all()
-            serializer = self.serializer_class(users, many=True)
-            response = {
-                'success': True,
-                'status_code': status.HTTP_200_OK,
-                'message': 'Successfully fetched users',
-                'users': serializer.data,
-            }
-            return Response(response, status=status.HTTP_200_OK)
+        # user =  request.user
+        # if user.role != 'Clerk':
+        #     response = {
+        #         'success': False,
+        #         'status_code': status.HTTP_403_FORBIDDEN,
+        #         'message':'You are not authorized to perform this action',
+        #     }
+        #     return Response(response, status.HTTP_403_FORBIDDEN)
+        # else:
+        users = User.objects.all()
+        serializer = self.serializer_class(users, many=True)
+        response = {
+            'success': True,
+            'status_code': status.HTTP_200_OK,
+            'message': 'Successfully fetched users',
+            'users': serializer.data,
+        }
+        return Response(response, status=status.HTTP_200_OK)
 
 
