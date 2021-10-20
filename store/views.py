@@ -6,7 +6,7 @@ from .models import Store
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, BasePermission
 from drf_yasg import openapi
 from rest_framework.schemas import AutoSchema, coreapi
 from rest_framework.decorators import api_view
@@ -31,6 +31,30 @@ class StoreListView(APIView):
             'stores': serializer.data,
         }
         return Response(response, status=status.HTTP_200_OK)
+    
+    @swagger_auto_schema(query_serializer=StoreSerializer, responses={200: StoreSerializer(many=True)})
+    def delete(self, request):
+        stores = Store.objects.all()
+        serializer = self.serializer_class(stores, many=True)
+        response = {
+            'success': True,
+            'status_code': status.HTTP_200_OK,
+            'message': 'Successfully deleted stores',
+            'store': serializer.data,
+        }
+        return Response(response, status=status.HTTP_200_OK)
+    
+    @swagger_auto_schema(query_serializer=StoreSerializer, responses={200: StoreSerializer(many=True)})
+    def put(self, request):
+        stores = Store.objects.all()
+        serializer = self.serializer_class(stores, many=True)
+        response = {
+            'success': True,
+            'status_code': status.HTTP_200_OK,
+            'message': 'Successfully updated stores',
+            'store': serializer.data,
+        }
+        return Response(response, status=status.HTTP_200_OK)
 
 
 class CreateStoreView(APIView):
@@ -52,6 +76,35 @@ class CreateStoreView(APIView):
                 'store': serializer.data
             }
             return Response(response, status=status_code)
+        
+    @swagger_auto_schema(request_body=StoreListSerializer, responses={201: StoreListSerializer(many=True)})
+    def delete(self, request):
+        serializer = self.serializer_class(data=request.data)
+        valid = serializer.is_valid(raise_exception=True)
+        if valid:
+            serializer.save()
+            status_code = status.HTTP_201_CREATED
+            response = {
+                'success': True,
+                'statusCode': status_code,
+                'message': 'Store successfully deleted',
+                'store': serializer.data
+            }
+            return Response(response, status=status_code)
+    @swagger_auto_schema(request_body=StoreListSerializer, responses={201: StoreListSerializer(many=True)})
+    def put(self, request):
+        serializer = self.serializer_class(data=request.data)
+        valid = serializer.is_valid(raise_exception=True)
+        if valid:
+            serializer.save()
+            status_code = status.HTTP_201_CREATED
+            response = {
+                'success': True,
+                'statusCode': status_code,
+                'message': 'Store successfully updated',
+                'store': serializer.data
+            }
+            return Response(response, status=status_code)
 
 class StoreByIdView(APIView):
         
@@ -59,8 +112,8 @@ class StoreByIdView(APIView):
     permission_classes = (AllowAny,)
     
     @swagger_auto_schema(query_serializer=StoreSerializer, responses={200: StoreSerializer(many=True)})
-    def get(self,request,uid):
-        store = Store.objects.get(id=uid)
+    def get(self,request,pk):
+        store = Store.objects.filter(id=pk)
         serializer = self.serializer_class(store, many = True)
         response = {
             'success': True,
@@ -70,6 +123,46 @@ class StoreByIdView(APIView):
         }
         return Response(response, status=status.HTTP_200_OK)
     
+    @swagger_auto_schema(query_serializer=StoreSerializer, responses={200: StoreSerializer(many=True)})
+    def delete(self, request, pk):
+        store = Store.objects.get(id=pk)
+        serializer = self.serializer_class(store, many=True)
+        response = {
+            'success': True,
+            'status_code': status.HTTP_200_OK,
+            'message': 'Successfully deleted store',
+            'store': serializer.data,
+        }
+        return Response(response, status=status.HTTP_200_OK)
     
+    @swagger_auto_schema(query_serializer=StoreSerializer, responses={200: StoreSerializer(many=True)})
+    def put(self, request, pk):
+        store = Store.objects.get(id=pk)
+        serializer = self.serializer_class(store, many=True)
+        response = {
+            'success': True,
+            'status_code': status.HTTP_200_OK,
+            'message': 'Successfully updated store',
+            'store': serializer.data,
+        }
+        return Response(response, status=status.HTTP_200_OK)
+    
+class IsAuthenticatedAndOwner(BasePermission):
+    message = 'You must be the owner of this object.'
+    edit_methods = ('GET','DELETE','PUT','PATCH',)
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated
+    def has_object_permission(self, request, view, obj):
+        if request.user.role == 'Merchant':
+            return True
+        return obj.user == request.user
+    
+    
+class CreateStoreupdateAPIView(APIView):
+    serializer_class = StoreListSerializer
+    stores = Store.objects.all()
+    lookup_field = 'pk'
+    permissions_classes = [IsAuthenticatedAndOwner]
+
    
   
