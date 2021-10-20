@@ -131,15 +131,6 @@ class UserListView(APIView):
 
     @swagger_auto_schema(query_serializer=UserRequestSerializer, responses={200: UserListSerializer(many=True)})
     def get(self, request):
-        # user =  request.user
-        # if user.role != 'Clerk':
-        #     response = {
-        #         'success': False,
-        #         'status_code': status.HTTP_403_FORBIDDEN,
-        #         'message':'You are not authorized to perform this action',
-        #     }
-        #     return Response(response, status.HTTP_403_FORBIDDEN)
-        # else:
         users = User.objects.all()
         serializer = self.serializer_class(users, many=True)
         response = {
