@@ -7,7 +7,7 @@ class ProductSerializer(serializers.ModelSerializer):
 		fields = '__all__'
 
 
-class ProductistSerializer(serializers.ModelSerializer):
+class ProductListSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Product
 		fields = ('store',)
