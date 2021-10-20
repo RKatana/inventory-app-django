@@ -32,9 +32,9 @@ class  CreateProductView(APIView):
         
 class DeleteProductView(APIView):
  		    # API endpoint that allows a product to be deleted.
-     queryset = Product.objects.all()
-     serializer_class = ProductSerializer
-     permission_classes = (AllowAny,)
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = (AllowAny,)
         
     @swagger_auto_schema(request_body=ProductSerializer, responses={200: ProductSerializer(many=True)})
     def delete(self, request):
