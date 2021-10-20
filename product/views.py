@@ -80,8 +80,8 @@ class ProductByIdView(APIView):
     permission_classes = (AllowAny,)
 
     @swagger_auto_schema(query_serializer=ProductistSerializer, responses={200: ProductSerializer(many=True)})
-    def get(self, request, uid):
-        product = Product.objects.get(id=uid)
+    def get(self, request, pk):
+        product = Product.objects.filter(id=pk)
         serializer = self.serializer_class(product, many=True)
         response = {
             'success': True,
