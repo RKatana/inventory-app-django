@@ -147,6 +147,23 @@ class StoreByIdView(APIView):
             'store': serializer.data,
         }
         return Response(response, status=status.HTTP_200_OK)
+    
+class StoreByUserIdView(APIView):
+
+    serializer_class = StoreListSerializer
+    permission_classes = (AllowAny,)
+    
+    @swagger_auto_schema(responses={200: StoreSerializer(many=True)})
+    def get(self,request,pk):
+        store = Store.objects.filter(user__id=pk)
+        serializer = self.serializer_class(store, many = True)
+        response = {
+            'success': True,
+            'status_code': status.HTTP_200_OK,
+            'message': 'Successfully fetched store',
+            'store': serializer.data,
+        }
+        return Response(response, status=status.HTTP_200_OK)
 
 
 class CreateStoreupdateAPIView(APIView):
