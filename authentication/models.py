@@ -28,7 +28,7 @@ class User(AbstractBaseUser,PermissionsMixin):
 
     email = models.EmailField(max_length=254, unique=True)
     name = models.CharField(max_length=254, null=True, blank=True)
-    role = models.CharField(_("role"), max_length=255, choices=Roles.choices, blank=True, null=True, default=Roles.CLERK)
+    role = models.CharField(_("role"), max_length=255, choices=Roles.choices, blank=True, null=True, default=Roles.MERCHANT)
     is_active = models.BooleanField(default=True)
     last_login = models.DateTimeField(null=True, blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -54,17 +54,17 @@ class User(AbstractBaseUser,PermissionsMixin):
         return self.email
 
 
-class Merchant(User):
+class Clerk(User):
     
     class Meta:
         proxy = True
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.role = User.Roles.MERCHANT
+            self.role = User.Roles.CLERK
             self.set_password(self.password)
             self.email=self.email
-        super(Merchant, self).save(*args, **kwargs)
+        super(Clerk, self).save(*args, **kwargs)
 
 
 class StoreAdmin(User):

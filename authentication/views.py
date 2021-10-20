@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.views import APIView
-from .serializers import MerchantLoginSerializer, UserRegistrationSerializer, UserLoginSerializer, UserListSerializer, MerchantRegistrationSerializer, StoreAdminRegistrationSerializer, MerchantLoginSerializer
+from .serializers import ClerkLoginSerializer, UserRegistrationSerializer, UserLoginSerializer, UserListSerializer, ClerkRegistrationSerializer, StoreAdminRegistrationSerializer
 from rest_framework.permissions import AllowAny,IsAuthenticated
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
@@ -31,12 +31,12 @@ class AuthUserRegistrationView(APIView):
             return Response(response, status=status_code)
 
 
-class MerchantRegistrationView(APIView):
-    serializer_class = MerchantRegistrationSerializer
+class ClerkRegistrationView(APIView):
+    serializer_class = ClerkRegistrationSerializer
     permission_classes = (AllowAny,)
 
 
-    @swagger_auto_schema(request_body=MerchantRegistrationSerializer, responses={201: MerchantRegistrationSerializer(many=True)})
+    @swagger_auto_schema(request_body=ClerkRegistrationSerializer, responses={201: ClerkRegistrationSerializer(many=True)})
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         valid = serializer.is_valid(raise_exception=True)
@@ -99,11 +99,11 @@ class AuthUserLoginView(APIView):
             return Response(response, status=status_code)
 
 
-class MerchantLoginView(APIView):
-    serializer_class = MerchantLoginSerializer
+class ClerkLoginView(APIView):
+    serializer_class = ClerkLoginSerializer
     permission_classes = (AllowAny,)
 
-    @swagger_auto_schema(request_body=MerchantLoginSerializer, responses={200: MerchantLoginSerializer(many=True)})
+    @swagger_auto_schema(request_body=ClerkLoginSerializer, responses={200: ClerkLoginSerializer(many=True)})
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         valid = serializer.is_valid(raise_exception=True)
