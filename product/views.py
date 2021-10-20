@@ -29,20 +29,27 @@ class  CreateProductView(APIView):
             }
             return Response(response, status=status_code)
         
-    @swagger_auto_schema(request_body=ProductSerializer, responses={201: ProductSerializer(many=True)})
-    def delete(self, request):
-        serializer = self.serializer_class(data=request.data)
-        valid = serializer.is_valid(raise_exception=True)
-        if valid:
-            serializer.save()
-            status_code = status.HTTP_201_CREATED
-            response = {
-                'success': True,
-                'statusCode': status_code,
-                'message': 'Product successfully deleted',
-                'product': serializer.data
-            }
-            return Response(response, status=status_code)
+        
+# class DeleteProductView(APIView):
+# 		    # API endpoint that allows a product to be deleted.
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
+#     permission_classes = (AllowAny,)
+        
+    # @swagger_auto_schema(request_body=ProductSerializer, responses={200: ProductSerializer(many=True)})
+    # def delete(self, request):
+    #     serializer = self.serializer_class(data=request.data)
+    #     valid = serializer.is_valid(raise_exception=True)
+    #     if valid:
+    #         serializer.delete()
+    #         status_code = status.HTTP_200_OK
+    #         response = {
+    #             'success': True,
+    #             'statusCode': status_code,
+    #             'message': 'Product successfully deleted',
+    #             'product': serializer.data
+    #         }
+    #         return Response(response, status=status_code)
 
 
 class ProductListView(APIView):    
@@ -92,8 +99,8 @@ class ProductByIdView(APIView):
         return Response(response, status=status.HTTP_200_OK)
     
     @swagger_auto_schema(manual_parameters=[], responses={200: ProductSerializer(many=True)})
-    def delete(self, request, uid):
-        product = Product.objects.get(id=uid)
+    def delete(self, request, pk):
+        product = Product.objects.filter(id=pk)
         serializer = self.serializer_class(product, many=True)
         response = {
             'success': True,

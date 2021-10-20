@@ -13,7 +13,7 @@ class Product(models.Model):
   selling_price = models.IntegerField(blank=True, null=True)
   spoilt = models.IntegerField(blank=True, null=True)
   payment_status = models.BooleanField(blank=True, null=True)
-  date_upload = models.DateTimeField(auto_now_add=True)
+  date_received = models.CharField(max_length=200, blank=True, null=True)
   store = models.ForeignKey(Store, on_delete=models.CASCADE, blank=True, null=True)
 
 
