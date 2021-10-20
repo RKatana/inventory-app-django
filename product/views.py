@@ -36,20 +36,20 @@ class  CreateProductView(APIView):
 #     serializer_class = ProductSerializer
 #     permission_classes = (AllowAny,)
         
-    # @swagger_auto_schema(request_body=ProductSerializer, responses={200: ProductSerializer(many=True)})
-    # def delete(self, request):
-    #     serializer = self.serializer_class(data=request.data)
-    #     valid = serializer.is_valid(raise_exception=True)
-    #     if valid:
-    #         serializer.delete()
-    #         status_code = status.HTTP_200_OK
-    #         response = {
-    #             'success': True,
-    #             'statusCode': status_code,
-    #             'message': 'Product successfully deleted',
-    #             'product': serializer.data
-    #         }
-    #         return Response(response, status=status_code)
+    @swagger_auto_schema(request_body=ProductSerializer, responses={200: ProductSerializer(many=True)})
+    def delete(self, request):
+        serializer = self.serializer_class(data=request.data)
+        valid = serializer.is_valid(raise_exception=True)
+        if valid:
+            serializer.delete()
+            status_code = status.HTTP_200_OK
+            response = {
+                'success': True,
+                'statusCode': status_code,
+                'message': 'Product successfully deleted',
+                'product': serializer.data
+            }
+            return Response(response, status=status_code)
 
 
 class ProductListView(APIView):    
@@ -67,6 +67,19 @@ class ProductListView(APIView):
             'products': serializer.data,
         }
         return Response(response, status=status.HTTP_200_OK)
+    
+    @swagger_auto_schema(query_serializer=ProductSerializer, responses={200: ProductSerializer(many=True)})
+    def put(self, request):
+        products = Product.objects.all()
+        serializer = self.serializer_class(products, many=True)
+        response = {
+            'success': True,
+            'status_code': status.HTTP_200_OK,
+            'message': 'Successfully updated products',
+            'store': serializer.data,
+        }
+        return Response(response, status=status.HTTP_200_OK)
+
     
     @swagger_auto_schema(manual_parameters=[], responses={200: ProductSerializer(many=True)})
     def delete(self, request):
@@ -100,7 +113,7 @@ class ProductByIdView(APIView):
     
     @swagger_auto_schema(manual_parameters=[], responses={200: ProductSerializer(many=True)})
     def delete(self, request, pk):
-        product = Product.objects.filter(id=pk)
+        product = Product.objects.get(id=pk)
         serializer = self.serializer_class(product, many=True)
         response = {
             'success': True,
