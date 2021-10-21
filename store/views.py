@@ -1,15 +1,11 @@
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.views import APIView
-from authentication.models import User
 from .serializer import StoreListSerializer
 from .models import Store
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from drf_yasg import openapi
-from rest_framework.schemas import AutoSchema
-from rest_framework.decorators import api_view
 from .permissions import IsAuthenticatedAndOwner
 from rest_framework import mixins
 from rest_framework import generics
@@ -17,8 +13,6 @@ from rest_framework import generics
 
 
 # # Create your views here.
-
-
 class StoreDetail(mixins.RetrieveModelMixin,
                     mixins.UpdateModelMixin,
                     mixins.DestroyModelMixin,
@@ -37,8 +31,8 @@ class StoreDetail(mixins.RetrieveModelMixin,
 
 
 class StoreListView(mixins.ListModelMixin,
-                      mixins.CreateModelMixin,
-                      generics.GenericAPIView):
+                    mixins.CreateModelMixin,
+                    generics.GenericAPIView):
     queryset = Store.objects.all()
     serializer_class = StoreListSerializer
 
@@ -47,11 +41,11 @@ class StoreListView(mixins.ListModelMixin,
     @swagger_auto_schema(manual_parameters=[store_param])
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
-      
+
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
-      
+
 class StoreByUserIdView(APIView):
     
     serializer_class = StoreListSerializer
@@ -68,8 +62,6 @@ class StoreByUserIdView(APIView):
             'product': serializer.data,
         }
         return Response(response, status=status.HTTP_200_OK)
-
-
 
 
 class CreateStoreupdateAPIView(APIView):
