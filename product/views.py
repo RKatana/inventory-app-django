@@ -32,12 +32,32 @@ class ProductListView(mixins.ListModelMixin,
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-    product_param = openapi.Parameter(
-        'product', in_=openapi.IN_QUERY, description='Enter any product word', type=openapi.TYPE_STRING)
+    product_param = openapi.Parameter('product', in_=openapi.IN_QUERY, description='Enter any product word', type=openapi.TYPE_STRING)
 
     @swagger_auto_schema(manual_parameters=[product_param])
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
+      
+     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
+
+      
+class ProductByStoreIdView(APIView):
+    
+    serializer_class = ProductSerializer
+    permission_classes = (AllowAny,)
+
+    @swagger_auto_schema(responses={200: ProductSerializer(many=True)})
+    def get(self, request,pk):
+        product = Product.objects.filter(store__id=pk)
+        serializer = self.serializer_class(product, many=True)
+        response = {
+            'success': True,
+            'status_code': status.HTTP_200_OK,
+            'message': 'Successfully fetched product',
+            'product': serializer.data,
+        }
+        return Response(response, status=status.HTTP_200_OK)
+
+
+    
