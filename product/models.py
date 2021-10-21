@@ -15,18 +15,3 @@ class Product(models.Model):
   payment_status = models.BooleanField(blank=True, null=True)
   date_received = models.CharField(max_length=199, blank=True, null=True)
   store = models.ForeignKey(Store, on_delete=models.CASCADE, blank=True, null=True)
-
-
-  def save_product(self):
-    self.save()
-
-  @classmethod
-  def delete_product(cls, id):
-    cls.objects.filter(id=id).delete()
-
-  @classmethod
-  def update_product(cls, id, productchange):
-    cls.objects.filter(id = id).update(product = productchange)
-
-  def __str__(self):
-    return self.name
