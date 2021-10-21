@@ -7,6 +7,7 @@ from drf_yasg import openapi
 from rest_framework.response import Response
 from rest_framework import mixins
 from rest_framework import generics
+from rest_framework import status
 # Create your views here.
 
 class ProductDetail(mixins.RetrieveModelMixin,
@@ -27,21 +28,21 @@ class ProductDetail(mixins.RetrieveModelMixin,
 
 
 class ProductListView(mixins.ListModelMixin,
-                      mixins.CreateModelMixin,
-                      generics.GenericAPIView):
+                    mixins.CreateModelMixin,
+                    generics.GenericAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-    product_param = openapi.Parameter('product', in_=openapi.IN_QUERY, description='Enter any product word', type=openapi.TYPE_STRING)
+    product_param = openapi.Parameter('product', in_=openapi.IN_QUERY, description='Enter any product name', type=openapi.TYPE_STRING)
 
     @swagger_auto_schema(manual_parameters=[product_param])
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
-      
-     def post(self, request, *args, **kwargs):
+
+    def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
-      
+
 class ProductByStoreIdView(APIView):
     
     serializer_class = ProductSerializer
@@ -59,5 +60,3 @@ class ProductByStoreIdView(APIView):
         }
         return Response(response, status=status.HTTP_200_OK)
 
-
-    
