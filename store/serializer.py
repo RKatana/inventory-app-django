@@ -10,10 +10,6 @@ class StoreListSerializer(serializers.ModelSerializer):
         model = Store
         fields = '__all__'
         
-class StoreSerializer(serializers.ModelSerializer):
 
-    class Meta:
-        model = Store
-        fields = ('user',)
         
    
