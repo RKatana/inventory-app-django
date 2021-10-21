@@ -153,7 +153,7 @@ class StoreByUserIdView(APIView):
     serializer_class = StoreListSerializer
     permission_classes = (AllowAny,)
     
-    @swagger_auto_schema(responses={200: StoreSerializer(many=True)})
+    @swagger_auto_schema(query_serializer=StoreListSerializer, responses={200: StoreSerializer(many=True)})
     def get(self,request,pk):
         store = Store.objects.filter(user__id=pk)
         serializer = self.serializer_class(store, many = True)
