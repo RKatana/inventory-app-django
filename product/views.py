@@ -40,8 +40,8 @@ class ProductListView(mixins.ListModelMixin,
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
+    # def post(self, request, *args, **kwargs):
+    #     return self.create(request, *args, **kwargs)
 
 
 class ProductByStoreIdView(APIView):
@@ -61,3 +61,23 @@ class ProductByStoreIdView(APIView):
         }
         return Response(response, status=status.HTTP_200_OK)
 
+
+class ProductCreateView(APIView):
+    serializer_class = ProductSerializer
+    permission_classes = (AllowAny,)
+
+    @swagger_auto_schema(request_body=ProductSerializer, responses={201: ProductSerializer(many=True)})
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        valid = serializer.is_valid(raise_exception=True)
+        if valid:
+            serializer.save()
+            status_code = status.HTTP_201_CREATED
+            response = {
+                'success': True,
+                'statusCode': status_code,
+                'message': 'Product successfully registered',
+                'product': serializer.data
+            }
+            return Response(response, status=status_code)
+    

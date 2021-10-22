@@ -36,14 +36,14 @@ class StoreListView(mixins.ListModelMixin,
     queryset = Store.objects.all()
     serializer_class = StoreListSerializer
 
-    store_param = openapi.Parameter('store', in_=openapi.IN_QUERY, description='Enter any store name', type=openapi.TYPE_STRING)
+    store_param = openapi.Parameter('store', in_=openapi.IN_QUERY, description='Enter 1', type=openapi.TYPE_INTEGER)
 
     @swagger_auto_schema(manual_parameters=[store_param])
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
+    # def post(self, request, *args, **kwargs):
+    #     return self.create(request, *args, **kwargs)
 
 
 class StoreByUserIdView(APIView):
@@ -64,8 +64,21 @@ class StoreByUserIdView(APIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
-class CreateStoreupdateAPIView(APIView):
+class StoreCreateView(APIView):
     serializer_class = StoreListSerializer
-    stores = Store.objects.all()
-    lookup_field = 'pk'
-    permissions_classes = [IsAuthenticatedAndOwner]
+    permission_classes = (AllowAny,)
+
+    @swagger_auto_schema(request_body=StoreListSerializer, responses={201: StoreListSerializer(many=True)})
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        valid = serializer.is_valid(raise_exception=True)
+        if valid:
+            serializer.save()
+            status_code = status.HTTP_201_CREATED
+            response = {
+                'success': True,
+                'statusCode': status_code,
+                'message': 'Store successfully created',
+                'store': serializer.data
+            }
+            return Response(response, status=status_code)
