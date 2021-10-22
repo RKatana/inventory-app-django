@@ -52,13 +52,13 @@ class StoreByUserIdView(APIView):
 
     @swagger_auto_schema(responses={200: StoreListSerializer(many=True)})
     def get(self, request,pk):
-        store = Store.objects.filter(store__id=pk)
+        store = Store.objects.filter(user__id=pk)
         serializer = self.serializer_class(store, many=True)
         response = {
             'success': True,
             'status_code': status.HTTP_200_OK,
             'message': 'Successfully fetched store',
-            'product': serializer.data,
+            'store': serializer.data,
         }
         return Response(response, status=status.HTTP_200_OK)
 
