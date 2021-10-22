@@ -1,6 +1,6 @@
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.views import APIView
-from .serializer import StoreListSerializer
+from .serializer import StoreListSerializer, StoreSerializer
 from .models import Store
 from rest_framework import status
 from rest_framework.response import Response
@@ -30,16 +30,16 @@ class StoreDetail(mixins.RetrieveModelMixin,
         return self.destroy(request, *args, **kwargs)
 
 
-class StoreListView(mixins.ListModelMixin,
-                    mixins.CreateModelMixin,
-                    generics.GenericAPIView):
-    queryset = Store.objects.all()
-    serializer_class = StoreListSerializer
+# class StoreListView(mixins.ListModelMixin,
+#                     mixins.CreateModelMixin,
+#                     generics.GenericAPIView):
+#     queryset = Store.objects.all()
+#     serializer_class = StoreListSerializer
 
-    store_param = openapi.Parameter('store', in_=openapi.IN_QUERY, description='Enter 1', type=openapi.TYPE_INTEGER)
-    @swagger_auto_schema(manual_parameters=[store_param])
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+    # store_param = openapi.Parameter('store', in_=openapi.IN_QUERY, description='Enter 1', type=openapi.TYPE_INTEGER)
+    # @swagger_auto_schema(manual_parameters=[store_param])
+    # def get(self, request, *args, **kwargs):
+    #     return self.list(request, *args, **kwargs)
 
     # def post(self, request, *args, **kwargs):
     #     return self.create(request, *args, **kwargs)
@@ -81,3 +81,20 @@ class StoreCreateView(APIView):
                 'store': serializer.data
             }
             return Response(response, status=status_code)
+
+
+class StoreListView(APIView):
+    serializer_class = StoreListSerializer
+    permission_classes = (AllowAny,)
+
+    @swagger_auto_schema(query_serializer=StoreSerializer, responses={200: StoreListSerializer(many=True)})
+    def get(self, request):
+        stores = Store.objects.all()
+        serializer = self.serializer_class(stores, many=True)
+        response = {
+            'success': True,
+            'status_code': status.HTTP_200_OK,
+            'message': 'Successfully fetched stores',
+            'stores': serializer.data,
+        }
+        return Response(response, status=status.HTTP_200_OK)

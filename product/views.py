@@ -1,4 +1,4 @@
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer,ProductListSerializer
 from .models import Product
 from rest_framework import status
 from rest_framework.views import APIView
@@ -28,17 +28,17 @@ class ProductDetail(mixins.RetrieveModelMixin,
         return self.destroy(request, *args, **kwargs)
 
 
-class ProductListView(mixins.ListModelMixin,
-                    mixins.CreateModelMixin,
-                    generics.GenericAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+# class ProductListView(mixins.ListModelMixin,
+#                     mixins.CreateModelMixin,
+#                     generics.GenericAPIView):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
 
     product_param = openapi.Parameter('product', in_=openapi.IN_QUERY, description='Enter any product id', type=openapi.TYPE_INTEGER)
 
-    @swagger_auto_schema(manual_parameters=[product_param])
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+#     @swagger_auto_schema(manual_parameters=[product_param])
+#     def get(self, request, *args, **kwargs):
+#         return self.list(request, *args, **kwargs)
 
     # def post(self, request, *args, **kwargs):
     #     return self.create(request, *args, **kwargs)
@@ -80,4 +80,20 @@ class ProductCreateView(APIView):
                 'product': serializer.data
             }
             return Response(response, status=status_code)
-    
+
+
+class ProductListView(APIView):
+    serializer_class = ProductSerializer
+    permission_classes = (AllowAny,)
+
+    @swagger_auto_schema(query_serializer=ProductListSerializer, responses={200: ProductSerializer(many=True)})
+    def get(self, request):
+        products = Product.objects.all()
+        serializer = self.serializer_class(products, many=True)
+        response = {
+            'success': True,
+            'status_code': status.HTTP_200_OK,
+            'message': 'Successfully fetched products',
+            'products': serializer.data,
+        }
+        return Response(response, status=status.HTTP_200_OK)
