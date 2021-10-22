@@ -36,7 +36,7 @@ class StoreListView(mixins.ListModelMixin,
     queryset = Store.objects.all()
     serializer_class = StoreListSerializer
 
-    store_param = openapi.Parameter('store', in_=openapi.IN_QUERY, description='Enter any store name', type=openapi.TYPE_STRING)
+    store_param = openapi.Parameter('store', in_=openapi.IN_QUERY, description='Enter any store number', type=openapi.TYPE_INTEGER)
 
     @swagger_auto_schema(manual_parameters=[store_param])
     def get(self, request, *args, **kwargs):
