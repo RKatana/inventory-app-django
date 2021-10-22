@@ -36,11 +36,10 @@ class StoreDetail(mixins.RetrieveModelMixin,
 #     queryset = Store.objects.all()
 #     serializer_class = StoreListSerializer
 
-#     store_param = openapi.Parameter('store', in_=openapi.IN_QUERY, description='Enter 1', type=openapi.TYPE_INTEGER)
-
-#     @swagger_auto_schema(manual_parameters=[store_param])
-#     def get(self, request, *args, **kwargs):
-#         return self.list(request, *args, **kwargs)
+    # store_param = openapi.Parameter('store', in_=openapi.IN_QUERY, description='Enter 1', type=openapi.TYPE_INTEGER)
+    # @swagger_auto_schema(manual_parameters=[store_param])
+    # def get(self, request, *args, **kwargs):
+    #     return self.list(request, *args, **kwargs)
 
     # def post(self, request, *args, **kwargs):
     #     return self.create(request, *args, **kwargs)

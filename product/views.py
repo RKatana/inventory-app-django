@@ -34,7 +34,7 @@ class ProductDetail(mixins.RetrieveModelMixin,
 #     queryset = Product.objects.all()
 #     serializer_class = ProductSerializer
 
-#     product_param = openapi.Parameter('product', in_=openapi.IN_QUERY, description='Enter any product name', type=openapi.TYPE_STRING)
+    product_param = openapi.Parameter('product', in_=openapi.IN_QUERY, description='Enter any product id', type=openapi.TYPE_INTEGER)
 
 #     @swagger_auto_schema(manual_parameters=[product_param])
 #     def get(self, request, *args, **kwargs):
